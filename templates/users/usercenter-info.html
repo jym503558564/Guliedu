@@ -1,0 +1,186 @@
+{% extends 'users/usercenter-base.html' %}
+{% load staticfiles %}
+{% block title %}个人信息- 谷粒教育网{% endblock %}
+{% block breach %}个人信息{% endblock %}
+{% block right %}
+   <div class="right">
+		<div class="personal_des ">
+			<div class="head" style="border:1px solid #eaeaea;">
+				<h1>个人信息</h1>
+			</div>
+			<div class="inforcon">
+				<div class="left" style="width:242px;">
+                    <iframe id='frameFile' name='frameFile' style='display: none;'></iframe>
+                    <form class="clearfix" id="jsAvatarForm" enctype="multipart/form-data" autocomplete="off" method="post" action="{% url 'users:usercenter_changeimage' %}" target='frameFile'>
+                        {% csrf_token %}
+                        <label class="changearea" for="avatarUp">
+                            <span id="avatardiv" class="pic">
+                                <img width="100" height="100" class="js-img-show" id="avatarShow" src="{{ MEDIA_URL }}{{ request.user.image }}"/>
+                            </span>
+                            <span class="fl upload-inp-box" style="margin-left:70px;">
+                                <span class="button btn-green btn-w100" id="jsAvatarBtn">修改头像</span>
+                                <input type="file" name="image" id="avatarUp" class="js-img-up"/>
+                            </span>
+                        </label>
+                    </form>
+                    <div style="border-top:1px solid #eaeaea;margin-top:30px;">
+                        <a class="button btn-green btn-w100" id="jsUserResetPwd" style="margin:80px auto;width:100px;">修改密码</a>
+                    </div>
+				</div>
+				<form class="perinform" id="jsEditUserForm" autocomplete="off">
+					<ul class="right">
+						<li>昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：
+                           <input type="text" name="nick_name" id="nick_name" value="{{ request.user.nick_name|default_if_none:"" }}" maxlength="10">
+                            <i class="error-tips"></i>
+                        </li>
+						<li>生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日：
+                           <input type="text" id="birth_day" name="birday" value="{{ request.user.birthday|default_if_none:""}}" readonly="readonly"/>
+                            <i class="error-tips"></i>
+						</li>
+						<li>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio"  name="gender" value="boy" {% if request.user.gender == 'boy' %}checked="checked"{% endif %}>男
+                            </label>
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="gender" value="girl" {% if request.user.gender == 'girl' %}checked="checked"{% endif %}>女
+                            </label>
+						</li>
+						<li class="p_infor_city">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：
+                            <input type="text" name="address" id="address" placeholder="请输入你的地址" value="{{ request.user.address|default_if_none:""}}" maxlength="10">
+						    <i class="error-tips"></i>
+                        </li>
+						<li>手&nbsp;&nbsp;机&nbsp;&nbsp;号：
+                            <input type="text" name="mobile" id="mobile" placeholder="请输入你的手机号码" value="{{ request.user.phone|default_if_none:"" }}" maxlength="11">
+                        </li>
+                        <li>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱：
+                        	<input class="borderno" type="text" name="email" readonly="readonly" value="{{ request.user.email }}"/>
+                            <span class="green changeemai_btn">[修改]</span>
+                    	</li>
+						<li class="button heibtn">
+							<input type="button" id="jsEditUserBt" value="保存">
+						</li>
+					</ul>
+
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block dialog %}
+    <div class="dialog" id="jsDialog">
+
+    <div class="resetpwdbox dialogbox" id="jsResetDialog">
+        <h1>修改密码</h1>
+        <div class="close jsCloseDialog"><img src="{% static 'images/dig_close.png' %}"/></div>
+        <div class="cont">
+            <form id="jsResetPwdForm" autocomplete="off">
+                <div class="box">
+                    <span class="word2" >新&nbsp;&nbsp;密&nbsp;&nbsp;码</span>
+                    <input type="password" id="pwd" name="password1" placeholder="6-20位非中文字符"/>
+                </div>
+                <div class="box">
+                    <span class="word2" >确定密码</span>
+                    <input type="password" id="repwd" name="password2" placeholder="6-20位非中文字符"/>
+                </div>
+                <div class="error btns" id="jsResetPwdTips"></div>
+                <div class="button">
+                    <input id="jsResetPwdBtn" type="button" value="提交" />
+                </div>
+                <input type='hidden' name='csrfmiddlewaretoken' value='DaP7IUKm9FA9nELA9YUlYYWpyIDdCiIP' />
+            <input type='hidden' name='csrfmiddlewaretoken' value='799Y6iPeEDNSGvrTu3noBrO4MBLv6enY' />
+            </form>
+        </div>
+    </div>
+    <div class="dialogbox changeemai1 changephone" id="jsChangeEmailDialog">
+        <h1>修改邮箱</h1>
+        <div class="close jsCloseDialog"><img src="{% static 'images/dig_close.png' %}"/></div>
+        <p>请输入新的邮箱地址</p>
+        <form id="jsChangeEmailForm" autocomplete="off">
+            <div class="box">
+                <input class="fl change_email" name="email" id="jsChangeEmail" type="text" placeholder="输入重新绑定的邮箱地址">
+            </div>
+            <div class="box">
+                <input class="fl email_code" type="text" id="jsChangeEmailCode" name="code" placeholder="输入邮箱验证码">
+                <input class="getcode getting" type="button" id="jsChangeEmailCodeBtn" value="获取验证码">
+            </div>
+            <div class="error btns change_email_tips" id="jsChangeEmailTips" >请输入...</div>
+            <div class="button">
+                <input class="changeemai_btn" id="jsChangeEmailBt" type="button" value="完成"/>
+            </div>
+
+        </form>
+    </div>
+    </div>
+{% endblock %}
+{% block myjs1 %}
+    <script>
+        $(function () {
+            $('#jsEditUserBt').click(function () {
+                var nick_name = $('#nick_name').val();
+                var birthday = $('#birth_day').val();
+                var address = $('#address').val();
+                var gender = $(':checked').val();
+                var phone = $('#mobile').val();
+                $.ajax({
+                    type:'POST',
+                    url:'{% url 'users:usercenter_changeinfo' %}',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        nick_name:nick_name,
+                        birthday:birthday,
+                        address:address,
+                        gender:gender,
+                        phone:phone
+                    },
+                    success:function (callback) {
+                        if(callback.status == 'ok'){
+                            window.location.reload()
+                        }else{
+                            alert(callback.msg)
+                        }
+
+                    }
+                })
+            });
+           $('#jsChangeEmailCodeBtn').click(function () {
+                var email = $('#jsChangeEmail').val();
+                $.ajax({
+                    type:'POST',
+                    url:'{% url 'users:usercenter_changeemail' %}',
+                    data:{
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                        email:email
+                    },
+                    success:function (callback) {
+                        alert(callback.msg)
+                    }
+                })
+            });
+
+          $('#jsChangeEmailBt').click(function () {
+                var email = $('#jsChangeEmail').val();
+                var code = $('#jsChangeEmailCode').val();
+                $.ajax({
+                    type:'POST',
+                    url:'{% url 'users:usercenter_resetemail' %}',
+                    data:{
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                        email:email,
+                        code:code
+                    },
+                    success:function (callback) {
+                        if(callback.status == 'ok'){
+                            window.location.href = '{% url 'users:user_logut' %}'
+                        }else {
+                            alert(callback.msg);
+                        }
+
+                    }
+                })
+            });
+        })
+
+    </script>
+{% endblock %}
+
+

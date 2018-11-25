@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}公开课列表 - 谷粒教育网{% endblock %}
+{% block content %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>公开课</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li {% if sorttype == '' %}class="active"{% endif %}><a href="?sort=">最新 </a></li>
+						<li{% if sorttype == 'hot' %} class="active"{% endif %} ><a href="?sorttype=hot">最热门</a></li>
+						<li {% if sorttype == 'students' %} class="active"{% endif %}><a href="?sorttype=students">参与人数</a></li>
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                            {% for course in pages %}
+                            <div class="box">
+                                <a href="{% url 'courses:course_detail' course.id %}">
+                                    <img width="280" height="350" class="scrollLoading" src="{{ MEDIA_URL }}{{ course.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'courses:course_detail' course.id %}">
+                                        <h2>{{ course.name }}</h2>
+                                    </a>
+                                    <span class="fl">时长：<i class="key">{{ course.study_time }}</i></span>
+                                    <span class="fr">学习人数：{{ course.study_num }}&nbsp;&nbsp;</span>
+                                </div>
+                                <div class="bottom">
+                                    <a href="{% url 'orgs:teacher_detail' course.orginfo.id %}"><span class="fl">{{ course.orginfo.name }}</span></a>
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                                        {{ course.love_num }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+					</div>
+                    <div class="pageturn">
+                        <ul class="pagelist">
+                        {% if pages.has_previous %}
+                        <li class="long"><a href="?pagenum={{ pages.previous_page_number }}&sorttype={{ sorttype }}&keyword={{ keyword }}">上一页</a></li>
+                         {% endif %}
+                                        {% for num in pages.paginator.page_range %}
+                                        <li {% if num == pages.number %} class="active"{% endif %}><a href="?pagenum={{ num }}&sorttype={{ sorttype }}&keyword={{ keyword }}">{{ num }}</a></li>
+                                        {% endfor %}
+
+                        {% if pages.has_next %}
+                         <li class="long"><a href="?pagenum={{ pages.next_page_number }}&sorttype={{ sorttype }}&keyword={{ keyword }}">下一页</a></li>
+                        {% endif %}
+
+
+                        </ul>
+                    </div>
+				</div>
+                </div>
+			</div>
+			<div class="right layout">
+				<div class="head">热门课程推荐</div>
+				<div class="group_recommend">
+                {% for course in recomment_sort %}
+                    <dl>
+						<dt>
+							<a target="_blank" href="{% url 'courses:course_detail' course.id %}">
+								<img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ course.image }}"/>
+							</a>
+						</dt>
+						<dd>
+							<a target="_blank" href="{% url 'courses:course_detail' course.id %}"><h2>{{ course.name }}</h2></a>
+							<span class="fl">难度：<i class="key">
+                                {% if course.level == 'cj' %}
+                                初级
+                                {% elif course.level == 'zj'%}
+                                 中级
+                                 {% else %}
+                                 高级
+                                {% endif %}
+                            </i></span>
+						</dd>
+					</dl>
+                 {% endfor %}
+
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

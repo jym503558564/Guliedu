@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'js/plugins/queryCity/css/cityLayout.css' %}">
+    {% block mycss1 %}{% endblock %}
+{% endblock %}
+{% block search %}
+     <div class="middle companyheader">
+        <div class="wp">
+            <img class="fl" style="width: 112px;height: 103px" src="{% static 'images/org.png' %}"/>
+            <div class="head fl">
+                <h1>
+                    谷粒教育网
+                    <img src="{% static 'images/authentication.png' %}"/>
+                    <img src="{% static 'images/gold.png' %}"/>
+                </h1>
+                <p class="fl">
+                    <span class="fl" style="margin-top:8px;color:#848484;">推荐指数： </span>
+                    <span class="precision company-credit" data-star-scope="5.0"></span>
+                    <span class="key">5.0</span>
+                </p>
+            </div>
+            <div class="btn fr collectionbtn " data-favid="22" data-fav-type="1" id="love">
+                {% if love_state %}
+                取消收藏
+                {% else %}
+                收藏
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section>
+	<div class="wp">
+		<ul  class="crumbs">
+            <li><a href="/">首页</a>></li>
+			<li><a href="{% url 'orgs:org_list' %}">课程机构</a>></li>
+			<li>{% block breach%}{% endblock %}</li>
+		</ul>
+	</div>
+</section>
+    <section>
+	<div class="wp list personal_list comp">
+		<div class="left">
+			<ul>
+				<li {% if detail_type == 'detail_home' %}class="active2"{% endif %}><a href="{% url 'orgs:org_detail' org.id %}">机构首页</a></li>
+                <li {% if detail_type == 'detail_course' %}class="active2"{% endif %}><a href="{% url 'orgs:org_course' org.id %}">机构课程</a></li>
+                <li {% if detail_type == 'detail_desc' %}class="active2"{% endif %}><a href="{% url 'orgs:org_desc' org.id %}">机构介绍</a></li>
+                <li {% if detail_type == 'detail_teacher0u' %}class="active2"{% endif %}><a href="{% url 'orgs:org_teacher' org.id %}">机构讲师</a></li>
+			</ul>
+		</div>
+{% block right %}{% endblock %}
+    </div>
+</section>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block myjs %}
+    <script type="text/javascript" src="{% static 'js/plugins/jquery.raty.js' %}"></script>
+    <script type="text/javascript">
+$(function(){
+    var $precision = $('.precision'),
+        score = $precision.attr('data-star-scope'),
+        option =  {
+                    half		: true,
+                    path		: '{% static 'images/' %}',
+                    precision	: true,
+                    size		: 24,
+                    starOff		: 'g_star.png',
+                    starOn		: 'r_star.png',
+                    starHalf	: 'h_star.png',
+                    hints       : ['极差', '差', '一般', '好评', '非常满意'],
+                    noRatedMsg  : '暂时还未获得评价！',
+                    readOnly    : true,
+                    score       : score
+                };
+    $precision.raty(option);
+
+
+    $("#love").click(function () {
+        var loveid = {{ org.id }};
+        var lovetype = 1;
+        $.ajax({
+            type:'GET',
+            url:'{% url 'operations:user_love' %}',
+            data:{
+                loveid:loveid,
+                lovetype:lovetype
+            },
+            success:function (callback) {
+                if(callback.status == 'ok'){
+                    $("#love").text(callback.msg)
+                }else if(callback.status == 'nologin'){
+                    window.location.href='{% url 'users:user_login'%}'
+                }else{
+                    alter(callback.msg)
+                }
+            }
+        })
+    })
+})
+</script>
+{% block myjs1 %}{% endblock %}
+{% endblock %}
